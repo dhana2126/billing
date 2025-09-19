@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coconut Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 20px; }
+    .box { max-width: 500px; margin: auto; padding: 20px; border: 2px solid #ccc; border-radius: 10px; }
+    input, button { padding: 10px; margin: 8px; width: 80%; }
+    .result { margin-top: 20px; font-size: 1.1rem; color: darkgreen; }
+    .error { color: red; font-weight: bold; }
+    h2 { margin-top: 20px; color: darkblue; }
+    h1 { margin-top: 20px; color: red; }
+  </style>
+</head>
+<body>
+
+  <div class="box" id="billing-box">
+    <h1>Billing Page</h1>
+    <input type="number" id="urai" placeholder="உறை எண்ணிக்கை"><br>
+    <input type="number" id="counts" placeholder="கை எண்ணிக்கை (Max 99)" min="0" max="99"><br>
+    <input type="number" id="persons" placeholder="நபர் எண்ணிக்கை"><br>
+    <button onclick="calculateBilling()">கணக்கிடு</button>
+    <button onclick="resetBilling()">Reset</button>
+    <div id="billing-result" class="result"></div>
+    <p><a href="#rounding-box">➡ Go to Rounding & Accounting Page</a></p>
+  </div>
+
+  <div class="box" id="rounding-box">
+    <h1>Rounding & Accounting Page</h1>
+    <h3>நல்ல காய் கணக்கு</h3>
+    <input type="number" id="total_counts_high" placeholder="நல்ல காய் எண்ணிக்கை"><br>
+    <input type="number" id="rate_high" step="0.01" placeholder="நல்ல காய் விலை"><br>
+
+    <h3>கழிவு காய் கணக்கு</h3>
+    <input type="number" id="total_counts_low" placeholder="கழிவு காய் எண்ணிக்கை"><br>
+    <input type="number" id="rate_low" step="0.01" placeholder="கழிவு காய் விலை"><br>
+
+    <button onclick="calculateRounding()">கணக்கிடு</button>
+    <button onclick="resetRounding()">Reset</button>
+    <div id="rounding-result" class="result"></div>
+    <p><a href="#billing-box">⬅ Go to Billing Page</a></p>
+  </div>
+
+<script>
+function calculateBilling() {
+  let urai = parseInt(document.getElementById("urai").value) || 0;
+  let counts = parseInt(document.getElementById("counts").value) || 0;
+  let persons = parseInt(document.getElementById("persons").value) || 0;
+
+  if (counts > 99) {
+    document.getElementById("billing-result").innerHTML =
+      "<p class='error'>Counts cannot exceed 99.</p>";
+    return;
+  }
+
+  let uraiCalc = urai * 100;
+  let personsCalc = persons * 2;
+  let output1 = uraiCalc * personsCalc;
+  let output2 = counts * personsCalc;
+  let total = output1 + output2;
+
+  document.getElementById("billing-result").innerHTML = `
+    <p><strong>உறை எண்ணிக்கை:</strong> ${urai}</p>
+    <p><strong>கை எண்ணிக்கை:</strong> ${counts}</p>
+    <p><strong>நபர் எண்ணிக்கை:</strong> ${persons}</p>
+    <p><strong>உறை அளவின் காய்:</strong> ${output1}</p>
+    <p><strong>கை அளவின் காய்:</strong> ${output2}</p>
+    <h2><strong>மொத்த தேங்காய் எண்ணிக்கை:</strong> ${total}</h2>
+  `;
+}
+
+function resetBilling() {
+  document.getElementById("urai").value = "";
+  document.getElementById("counts").value = "";
+  document.getElementById("persons").value = "";
+  document.getElementById("billing-result").innerHTML = "";
+}
+
+function calculateRounding() {
+  let totalHigh = parseFloat(document.getElementById("total_counts_high").value) || 0;
+  let rateHigh = parseFloat(document.getElementById("rate_high").value) || 0;
+  let totalLow = parseFloat(document.getElementById("total_counts_low").value) || 0;
+  let rateLow = parseFloat(document.getElementById("rate_low").value) || 0;
+
+  let customersCount = Math.floor(totalHigh / 1.15);
+  let highAmount = customersCount * rateHigh;
+  let lowAmount = totalLow * rateLow;
+  let finalAmount = highAmount + lowAmount;
+
+  document.getElementById("rounding-result").innerHTML = `
+    <h3>காய் & தொகை விவரம்</h3>
+    <p><strong>சுத்த காய்:</strong> ${customersCount}</p>
+    <p><strong>சுத்த காயிற்கான தொகை:</strong> ${highAmount.toFixed(2)}</p>
+    <p><strong>கழிவு காயிற்கான தொகை:</strong> ${lowAmount.toFixed(2)}</p>
+    <h3><strong>வாடிக்கையாளரின் மொத்த தொகை:</strong> ${finalAmount.toFixed(2)}</h3>
+  `;
+}
+
+function resetRounding() {
+  document.getElementById("total_counts_high").value = "";
+  document.getElementById("rate_high").value = "";
+  document.getElementById("total_counts_low").value = "";
+  document.getElementById("rate_low").value = "";
+  document.getElementById("rounding-result").innerHTML = "";
+}
+</script>
+
+</body>
+</html>
